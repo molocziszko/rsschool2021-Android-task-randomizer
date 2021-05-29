@@ -23,6 +23,9 @@ class FirstFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
+        /*
+        * * Check if the host activity implements OnInputSender interface.
+        * */
         if (context is OnInputSender) {
             sender = context
         } else {
@@ -57,6 +60,10 @@ class FirstFragment : Fragment() {
         }
     }
 
+    /** This function checks whether it is empty, Min > Max, any of its values > Int.MAX_VALUE
+     * @param firstInput    plain string that is assumed that it will be a Min value
+     * @param secondInput   plain string that is assumed that it will be a Max value
+     */
     private fun runIfValid(firstInput: String, secondInput: String) {
         if (firstInput.isBlank() || secondInput.isBlank()) {
             Toast.makeText(
@@ -90,6 +97,11 @@ class FirstFragment : Fragment() {
 
     companion object {
 
+        /**
+         * This annotation tells the compiler to generate an additional static method.
+         * Also it allows to leave out multiple companion references in multiple places of the app.
+         * That annotation required only when method called from Java code.
+         */
         @JvmStatic
         fun newInstance(previousResult: Int): FirstFragment {
             val fragment = FirstFragment()

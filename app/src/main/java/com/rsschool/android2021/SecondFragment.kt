@@ -9,7 +9,6 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
-import java.util.*
 
 class SecondFragment : Fragment() {
 
@@ -21,6 +20,9 @@ class SecondFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
+        /*
+        * Check if the host activity implements OnOutputSender interface.
+        * */
         if (context is OnOutputSender) {
             sender = context
         } else {
@@ -31,6 +33,10 @@ class SecondFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        /*
+        * This callback implementation allows callback added via the #addCallback method
+        * to handle the Back button event and return generated result to the first screen.
+        * */
         val callback = requireActivity().onBackPressedDispatcher.addCallback(this) {
             sender.sendOutput(result?.text.toString().toInt())
         }
@@ -59,13 +65,20 @@ class SecondFragment : Fragment() {
         }
     }
 
+    /**
+     * Generate a random integer from given range.
+     * @param min   value that serves as a start point of the random generated range
+     * @param max   value that serves as an end point of the random generated range
+     * @return      random generated value in the range from min to max.
+     */
     private fun generate(min: Int, max: Int) = (min..max).random()
 
     companion object {
 
         /**
-         *
-         *
+         * This annotation tells the compiler to generate an additional static method.
+         * Also it allows to leave out multiple companion references in multiple places of the app.
+         * That annotation required only when method called from Java code.
          */
         @JvmStatic
         fun newInstance(min: Int, max: Int): SecondFragment {
