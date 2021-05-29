@@ -7,7 +7,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OnOutputSender, OnInputSender {
+    private static final String TAG = "MainActivity";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -19,11 +20,27 @@ public class MainActivity extends AppCompatActivity {
     private void openFirstFragment(int previousNumber) {
         final Fragment firstFragment = FirstFragment.newInstance(previousNumber);
         final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.container, firstFragment);
-        // TODO: invoke function which apply changes of the transaction
+        transaction
+                .replace(R.id.container, firstFragment)
+                .commit();
     }
 
     private void openSecondFragment(int min, int max) {
-        // TODO: implement it
+        final Fragment secondFragment = SecondFragment.newInstance(min, max);
+        final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+        transaction
+                .replace(R.id.container, secondFragment, TAG)
+                .commit();
+    }
+
+    @Override
+    public void sendOutput(int data) {
+        openFirstFragment(data);
+    }
+
+    @Override
+    public void sendInput(int firstInput, int secondInput) {
+        openSecondFragment(firstInput, secondInput);
     }
 }

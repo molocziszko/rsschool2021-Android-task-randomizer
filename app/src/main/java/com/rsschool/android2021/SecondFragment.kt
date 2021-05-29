@@ -1,17 +1,40 @@
 package com.rsschool.android2021
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
+import java.util.*
 
 class SecondFragment : Fragment() {
 
     private var backButton: Button? = null
     private var result: TextView? = null
+
+    private lateinit var sender: OnOutputSender
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        if (context is OnOutputSender) {
+            sender = context
+        } else {
+            throw RuntimeException("Something wrong with sending output from SecondFragment: not a suitable context.")
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        val callback = requireActivity().onBackPressedDispatcher.addCallback(this) {
+            sender.sendOutput(result?.text.toString().toInt())
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,23 +55,25 @@ class SecondFragment : Fragment() {
         result?.text = generate(min, max).toString()
 
         backButton?.setOnClickListener {
-            // TODO: implement back
+            sender.sendOutput(result?.text.toString().toInt())
         }
     }
 
-    private fun generate(min: Int, max: Int): Int {
-        // TODO: generate random number
-        return 0
-    }
+    private fun generate(min: Int, max: Int) = (min..max).random()
 
     companion object {
 
+        /**
+         *
+         *
+         */
         @JvmStatic
         fun newInstance(min: Int, max: Int): SecondFragment {
             val fragment = SecondFragment()
             val args = Bundle()
-
-            // TODO: implement adding arguments
+            args.putInt(MIN_VALUE_KEY, min)
+            args.putInt(MAX_VALUE_KEY, max)
+            fragment.arguments = args
 
             return fragment
         }
